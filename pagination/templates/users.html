@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    $(document).ready( function() {
+        $("a").click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: this.href,
+                method: "get",
+                success: function(data) {
+                    $("#users").html(data)
+                }
+            });
+        });
+    });
+    </script>
+    <style>
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin: 10px;
+            margin-left: 25%;
+            margin-bottom: 30px;
+        }
+        th {
+            text-align: left;
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+            padding-right: 100px;
+            background-color: lightgrey;
+        }
+        tr td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            background-color: rgb(237, 241, 248);
+        }
+        .pagination {
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Created At</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{user.id}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.created_at}}</td>
+                <td>{{user.email}}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if users.has_other_pages %}
+    <ul class = "pagination justify-content-center">
+        {% if users.has_previous %}
+            <li class = "page-item"><a class = "page-link" href = "/users/1">&laquo First</a></li>
+            <li class = "page-item"><a class = "page-link" href = "/users/{{users.previous_page_number}}">Prev</a></li>
+        {% else %}
+            <li class = "page-item disabled"><span class = "page-link">Prev</span></li>
+        {% endif %}
+
+        {% for i in users.paginator.page_range %}
+            {% if users.number == i %}
+                <li class = "page-item active"><span class = "page-link">{{i}}</span></li>
+            {% else %}
+                <li class = "page-item"><a class = "page-link" href = "/users/{{ i }}">{{i}}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if users.has_next %}
+            <li class = "page-item"><a class = "page-link" href = "/users/{{users.next_page_number}}">Next</a></li>
+            <li class = "page-item"><a class = "page-link" href = "/users/{{users.paginator.num_pages}}">Last &raquo</a></li>
+            {% else %}
+            <li class = "page-item disabled"><span class = "page-link">Next</span></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</body>
+</html>
